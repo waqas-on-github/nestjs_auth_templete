@@ -14,67 +14,38 @@ var __param = (this && this.__param) || function (paramIndex, decorator) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.IamController = void 0;
 const common_1 = require("@nestjs/common");
-const iam_service_1 = require("./iam.service");
-const create_iam_dto_1 = require("./dto/create-iam.dto");
-const update_iam_dto_1 = require("./dto/update-iam.dto");
+const config_1 = require("@nestjs/config");
+const google_auth_guard_1 = require("./guards/google.auth.guard");
 let IamController = class IamController {
-    constructor(iamService) {
-        this.iamService = iamService;
+    constructor(configService) {
+        this.configService = configService;
     }
-    create(createIamDto) {
-        return this.iamService.create(createIamDto);
+    async googleAuth() {
     }
-    findAll() {
-        return this.iamService.findAll();
-    }
-    findOne(id) {
-        return this.iamService.findOne(+id);
-    }
-    update(id, updateIamDto) {
-        return this.iamService.update(+id, updateIamDto);
-    }
-    remove(id) {
-        return this.iamService.remove(+id);
+    googleAuthRedirect(req) {
+        return {
+            message: 'User Info from Google',
+        };
     }
 };
 exports.IamController = IamController;
 __decorate([
-    (0, common_1.Post)(),
-    __param(0, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [create_iam_dto_1.CreateIamDto]),
-    __metadata("design:returntype", void 0)
-], IamController.prototype, "create", null);
-__decorate([
-    (0, common_1.Get)(),
+    (0, common_1.Get)('google'),
+    (0, common_1.UseGuards)(google_auth_guard_1.GoogleOauthGuard),
     __metadata("design:type", Function),
     __metadata("design:paramtypes", []),
-    __metadata("design:returntype", void 0)
-], IamController.prototype, "findAll", null);
+    __metadata("design:returntype", Promise)
+], IamController.prototype, "googleAuth", null);
 __decorate([
-    (0, common_1.Get)(':id'),
-    __param(0, (0, common_1.Param)('id')),
+    (0, common_1.Get)('/callback'),
+    (0, common_1.UseGuards)(google_auth_guard_1.GoogleOauthGuard),
+    __param(0, (0, common_1.Req)()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
+    __metadata("design:paramtypes", [Object]),
     __metadata("design:returntype", void 0)
-], IamController.prototype, "findOne", null);
-__decorate([
-    (0, common_1.Patch)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __param(1, (0, common_1.Body)()),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, update_iam_dto_1.UpdateIamDto]),
-    __metadata("design:returntype", void 0)
-], IamController.prototype, "update", null);
-__decorate([
-    (0, common_1.Delete)(':id'),
-    __param(0, (0, common_1.Param)('id')),
-    __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String]),
-    __metadata("design:returntype", void 0)
-], IamController.prototype, "remove", null);
+], IamController.prototype, "googleAuthRedirect", null);
 exports.IamController = IamController = __decorate([
-    (0, common_1.Controller)('iam'),
-    __metadata("design:paramtypes", [iam_service_1.IamService])
+    (0, common_1.Controller)(),
+    __metadata("design:paramtypes", [config_1.ConfigService])
 ], IamController);
 //# sourceMappingURL=iam.controller.js.map
