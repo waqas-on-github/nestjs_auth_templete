@@ -4,12 +4,16 @@ import { IamController } from './iam.controller';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './stratiges/google.strategy';
+import { PrismaService } from 'src/prisma.service';
+import { GoogleUserProvider } from './providers/GoogleUserProvider';
 
 @Module({
   controllers: [IamController],
   providers: [
     IamService,
     ConfigService,
+    PrismaService,
+    GoogleUserProvider,
     GoogleStrategy, // Add this line
   ],
   imports: [PassportModule.register({ defaultStrategy: 'google' })],

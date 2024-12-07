@@ -1,30 +1,47 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
-import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
+type googleUserProfile = {
+  sub: string;
+  email: string;
+  name: string;
+  given_name: string;
+  family_name: string;
+  picture: string;
+};
 @Injectable()
 export class GoogleUserProvider {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async saveUserToDb(user: Omit<User, 'id'>) {
+  async saveUserToDb(profile: googleUserProfile) {
     try {
-      const savedUser = await this.prismaService.user.create({
-        data: {
-          email: user.email,
-          googleId: user.googleId,
-          username: user.username,
-          givenName: user.givenName,
-          familyName: user.familyName,
-          picture: user.picture,
+      // if user exists, update user
+      const savedUser = await this.prismaService.user.upsert({
+        where: {
+          googleId: profile.sub,
+        },
+        update: {
+          googleId: profile.sub,
+          email: profile.email,
+          username: profile.name,
+          givenName: profile.given_name,
+          familyName: profile.family_name,
+          picture: profile.picture,
+        },
+        create: {
+          googleId: profile.sub,
+          email: profile.email,
+          username: profile.name,
+          givenName: profile.given_name,
+          familyName: profile.family_name,
+          picture: profile.picture,
         },
       });
 
       if (!savedUser) {
-        throw new InternalServerErrorException('User not saved');
+        throw new InternalServerErrorException('failed to save user');
       }
       return savedUser;
-    } catch (error) {
-      throw error;
-    }
+    } catch (error) {}
   }
 }

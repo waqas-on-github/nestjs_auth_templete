@@ -2,10 +2,15 @@ import { Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Strategy, VerifyCallback } from 'passport-google-oauth20';
 import { ConfigService } from '@nestjs/config';
+import { GoogleUserProvider } from '../providers/GoogleUserProvider';
+import e from 'express';
 
 @Injectable()
 export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
-  constructor(private configService: ConfigService) {
+  constructor(
+    private configService: ConfigService,
+    private readonly googleUserProvider: GoogleUserProvider,
+  ) {
     super({
       clientID: configService.get<string>('GOOGLE_CLIENT_ID'),
       clientSecret: configService.get<string>('GOOGLE_CLIENT_SECRET'),
@@ -20,14 +25,17 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
-    const { id, name, emails } = profile;
-    const user = {
-      googleId: id,
-      email: emails[0].value,
-      firstName: name.givenName,
-      lastName: name.familyName,
-      accessToken,
-    };
-    done(null, user);
+    console.log(profile._json);
+    const savedUser = await this.googleUserProvider.saveUserToDb(profile._json);
+    done(
+      null,
+      // data which we want to attach with req.user
+      {
+        id: savedUser.id,
+        email: savedUser.email,
+        username: savedUser.username,
+        googleId: savedUser.googleId,
+      },
+    );
   }
 }
