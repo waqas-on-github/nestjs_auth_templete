@@ -21,12 +21,15 @@ export class GoogleStrategy extends PassportStrategy(Strategy, 'google') {
 
   async validate(
     accessToken: string,
-    refreshToken: string,
+    refreshToken: string, // TODO! save access token and refresh token in redis
     profile: any,
     done: VerifyCallback,
   ): Promise<any> {
     console.log(profile._json);
+    // save user to database
     const savedUser = await this.googleUserProvider.saveUserToDb(profile._json);
+
+    //set user to req.user object
     done(
       null,
       // data which we want to attach with req.user

@@ -6,6 +6,8 @@ import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './stratiges/google.strategy';
 import { PrismaService } from 'src/prisma.service';
 import { GoogleUserProvider } from './providers/GoogleUserProvider';
+import { JwtService } from '@nestjs/jwt';
+import { TokenProvider } from './providers/tokenProvider';
 
 @Module({
   controllers: [IamController],
@@ -13,6 +15,8 @@ import { GoogleUserProvider } from './providers/GoogleUserProvider';
     IamService,
     ConfigService,
     PrismaService,
+    JwtService,
+    TokenProvider,
     GoogleUserProvider,
     GoogleStrategy, // Add this line
   ],

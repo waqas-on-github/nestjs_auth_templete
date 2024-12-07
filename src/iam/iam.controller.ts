@@ -3,13 +3,17 @@ import { ConfigService } from '@nestjs/config';
 
 import e, { Request } from 'express';
 import { GoogleOauthGuard } from './guards/google.auth.guard';
+import { IamService } from './iam.service';
 
 interface googleRequest extends Request {
   user: any;
 }
 @Controller()
 export class IamController {
-  constructor(private readonly configService: ConfigService) {}
+  constructor(
+    private readonly configService: ConfigService,
+    private readonly iamService: IamService,
+  ) {}
 
   @Get('google')
   @UseGuards(GoogleOauthGuard)
@@ -20,9 +24,8 @@ export class IamController {
 
   @Get('/callback')
   @UseGuards(GoogleOauthGuard)
-  googleAuthRedirect(@Req() req: Request) {
-    return {
-      user: req.user,
-    };
+  async googleAuthRedirect(@Req() req: googleRequest) {
+    return await this.iamService.SendJwtToken(req.user);
   }
 }
+   
