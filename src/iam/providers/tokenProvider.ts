@@ -16,7 +16,6 @@ export class TokenProvider {
         secret: this.configService.get<string>('JWT_SECRET'),
       });
 
-      console.log('token at token provider', token);
 
       if (!token) {
         throw new UnauthorizedException();

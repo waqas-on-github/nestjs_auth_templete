@@ -34,7 +34,6 @@ export class SignInProvider {
       const token = await this.tokenProvider.generateToken({
         id: user.id,
         email: user.email,
-        username: user.username,
         googleId: user.googleId,
       });
       console.log('token at signInProvider', token);
