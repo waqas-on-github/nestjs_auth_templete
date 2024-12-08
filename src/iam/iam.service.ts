@@ -12,9 +12,14 @@ export class IamService {
     private readonly signInProvider: SignInProvider,
   ) {}
 
-  async SendJwtToken(user: any) {
-    const token = await this.toknProvider.generateToken(user);
-    return token;
+  async SignInOauthUser(user: any) {
+    return {
+      accessToken: await this.toknProvider.generateAccessToken(user),
+      refreshToken: await this.toknProvider.generateRefreshToken({
+        id: user.id,
+        googleId: user.googleId,
+      }),
+    };
   }
 
   async SingUp(signUpDto: SignUpDto) {

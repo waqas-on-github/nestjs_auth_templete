@@ -9,19 +9,35 @@ export class TokenProvider {
     private readonly configService: ConfigService,
   ) {}
 
-  async generateToken(payload: any) {
+  async generateAccessToken(payload: any) {
     try {
       const token = await this.jwtService.signAsync(payload, {
         expiresIn: '1h',
         secret: this.configService.get<string>('JWT_SECRET'),
       });
 
+      if (!token) {
+        throw new UnauthorizedException();
+      }
+
+      return token;
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async generateRefreshToken(payload: any) {
+    try {
+      const token = await this.jwtService.signAsync(payload, {
+        expiresIn: '10d',
+        secret: this.configService.get<string>('JWT_REFRESH_SECRET'),
+      });
 
       if (!token) {
         throw new UnauthorizedException();
       }
 
-      return { token };
+      return token;
     } catch (error) {
       throw error;
     }

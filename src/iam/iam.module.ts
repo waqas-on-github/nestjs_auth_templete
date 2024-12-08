@@ -21,7 +21,7 @@ import { ProfileModule } from 'src/profile/profile.module';
     JwtService,
     TokenProvider,
     GoogleUserProvider,
-    GoogleStrategy, // Add this line
+    GoogleStrategy,
     JwtStrategy,
     SignUpProvider,
     SignInProvider,

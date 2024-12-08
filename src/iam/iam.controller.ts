@@ -17,6 +17,7 @@ export class IamController {
     private readonly configService: ConfigService,
     private readonly iamService: IamService,
   ) {}
+
   @IsPublic()
   @Get('google')
   @UseGuards(GoogleOauthGuard)
@@ -24,11 +25,12 @@ export class IamController {
     //  return 'Google Auth Success';
     // Initiates Google OAuth flow
   }
+
   @IsPublic()
   @Get('/callback')
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req: googleRequest) {
-    return await this.iamService.SendJwtToken(req.user);
+    return await this.iamService.SignInOauthUser(req.user);
   }
   @Get('/proctected')
   @UseGuards(JwtAuthGuard)

@@ -4,6 +4,7 @@ import { SignInDto } from '../dto/signIn.dto';
 import * as argon2 from 'argon2';
 import { TokenProvider } from './tokenProvider';
 
+
 @Injectable()
 export class SignInProvider {
   constructor(
@@ -30,14 +31,15 @@ export class SignInProvider {
         throw new BadRequestException('Invalid password');
       }
 
-      // generate token
-      const token = await this.tokenProvider.generateToken({
-        id: user.id,
-        email: user.email,
-        googleId: user.googleId,
-      });
-      console.log('token at signInProvider', token);
-      return token;
+      return {
+        accessToken: await this.tokenProvider.generateAccessToken({
+          id: user.id,
+          email: user.email,
+        }),
+        refreshToken: await this.tokenProvider.generateRefreshToken({
+          id: user.id,
+        }),
+      };
     } catch (error) {
       throw error;
     }
