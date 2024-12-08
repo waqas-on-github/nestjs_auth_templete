@@ -17,7 +17,6 @@ import { SignInProvider } from './providers/signIn.provider';
   providers: [
     IamService,
     ConfigService,
-    PrismaService,
     JwtService,
     TokenProvider,
     GoogleUserProvider,
