@@ -8,6 +8,9 @@ import { PrismaService } from 'src/prisma.service';
 import { GoogleUserProvider } from './providers/GoogleUserProvider';
 import { JwtService } from '@nestjs/jwt';
 import { TokenProvider } from './providers/tokenProvider';
+import { JwtStrategy } from './stratiges/jwt.stratiegy';
+import { SignUpProvider } from './providers/signUp.provider';
+import { SignInProvider } from './providers/signIn.provider';
 
 @Module({
   controllers: [IamController],
@@ -19,6 +22,9 @@ import { TokenProvider } from './providers/tokenProvider';
     TokenProvider,
     GoogleUserProvider,
     GoogleStrategy, // Add this line
+    JwtStrategy,
+    SignUpProvider,
+    SignInProvider,
   ],
   imports: [PassportModule.register({ defaultStrategy: 'google' })],
 })
