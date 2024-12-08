@@ -4,10 +4,6 @@ import { PrismaService } from 'src/prisma.service';
 type googleUserProfile = {
   sub: string;
   email: string;
-  name: string;
-  given_name: string;
-  family_name: string;
-  picture: string;
 };
 @Injectable()
 export class GoogleUserProvider {

@@ -4,13 +4,14 @@ import { IamController } from './iam.controller';
 import { PassportModule } from '@nestjs/passport';
 import { ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './stratiges/google.strategy';
-import { PrismaService } from 'src/prisma.service';
 import { GoogleUserProvider } from './providers/GoogleUserProvider';
 import { JwtService } from '@nestjs/jwt';
 import { TokenProvider } from './providers/tokenProvider';
 import { JwtStrategy } from './stratiges/jwt.stratiegy';
 import { SignUpProvider } from './providers/signUp.provider';
 import { SignInProvider } from './providers/signIn.provider';
+import { PrismaModule } from 'src/prismaModule/prisma.module';
+import { ProfileModule } from 'src/profile/profile.module';
 
 @Module({
   controllers: [IamController],
@@ -25,6 +26,10 @@ import { SignInProvider } from './providers/signIn.provider';
     SignUpProvider,
     SignInProvider,
   ],
-  imports: [PassportModule.register({ defaultStrategy: 'google' })],
+  imports: [
+    PassportModule.register({ defaultStrategy: 'google' }),
+    PrismaModule,
+    ProfileModule,
+  ],
 })
 export class IamModule {}

@@ -1,10 +1,11 @@
 import {
   BadRequestException,
+  Injectable,
   InternalServerErrorException,
 } from '@nestjs/common';
 import { CreateProfileDto } from '../dto/create-profile.dto';
 import { PrismaService } from 'src/prisma.service';
-
+@Injectable()
 export class CreateProfileProvider {
   constructor(private readonly prismaService: PrismaService) {}
   async create(createProfileDto: CreateProfileDto) {
