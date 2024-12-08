@@ -23,18 +23,10 @@ export class GoogleUserProvider {
         update: {
           googleId: profile.sub,
           email: profile.email,
-          username: profile.name,
-          givenName: profile.given_name,
-          familyName: profile.family_name,
-          picture: profile.picture,
         },
         create: {
           googleId: profile.sub,
           email: profile.email,
-          username: profile.name,
-          givenName: profile.given_name,
-          familyName: profile.family_name,
-          picture: profile.picture,
         },
       });
 

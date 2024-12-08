@@ -17,14 +17,14 @@ export class IamController {
     private readonly configService: ConfigService,
     private readonly iamService: IamService,
   ) {}
-
+  @IsPublic()
   @Get('google')
   @UseGuards(GoogleOauthGuard)
   async googleAuth() {
     //  return 'Google Auth Success';
     // Initiates Google OAuth flow
   }
-
+  @IsPublic()
   @Get('/callback')
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req: googleRequest) {
