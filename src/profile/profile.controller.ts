@@ -6,11 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProfileService } from './profile.service';
 import { CreateProfileDto } from './dto/create-profile.dto';
-
-@Controller('profile')
+import { IsPublic } from 'src/iam/decorators/isPublic';
+import { UpdateProfileDto } from './dto/update-profile.dto';
+@IsPublic()
+@Controller('profiles')
 export class ProfileController {
   constructor(private readonly profileService: ProfileService) {}
 
@@ -25,17 +28,20 @@ export class ProfileController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.profileService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.profileService.findOne(id);
   }
 
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateProfileDto: any) {
-    return this.profileService.update(+id);
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateProfileDto: UpdateProfileDto,
+  ) {
+    return this.profileService.update(updateProfileDto, id);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseIntPipe) id: number) {
     return this.profileService.remove(+id);
   }
 }

@@ -1,24 +1,55 @@
-import { Injectable } from '@nestjs/common';
+import {
+  Injectable,
+  InternalServerErrorException,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateProfileDto } from './dto/create-profile.dto';
 import { CreateProfileProvider } from './providers/create-profile';
+import { PrismaService } from 'src/prisma.service';
+import { UpdateProfileProvider } from './providers/update-profile';
+import { UpdateProfileDto } from './dto/update-profile.dto';
 
 @Injectable()
 export class ProfileService {
-  constructor(private readonly createProfileProvider: CreateProfileProvider) {}
-  create(createProfileDto: CreateProfileDto) {
-    return this.createProfileProvider.create(createProfileDto);
+  constructor(
+    private readonly createProfileProvider: CreateProfileProvider,
+    private readonly prismaservice: PrismaService,
+    private readonly updateProfileProvider: UpdateProfileProvider,
+  ) {}
+  async create(createProfileDto: CreateProfileDto) {
+    return await this.createProfileProvider.create(createProfileDto);
   }
 
-  findAll() {
-    return `This action returns all profiles`;
+  async findAll() {
+    try {
+      const profiles = await this.prismaservice.profile.findMany();
+      if (!profiles) {
+        throw new InternalServerErrorException('failed to find profiles');
+      }
+      return profiles;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} profile`;
+  async findOne(id: number) {
+    try {
+      const profile = await this.prismaservice.profile.findFirst({
+        where: {
+          id: id,
+        },
+      });
+      if (!profile) {
+        throw new NotFoundException('profile not found');
+      }
+      return profile;
+    } catch (error) {
+      throw error;
+    }
   }
 
-  update(id: number) {
-    return `This action updates a #${id} profile`;
+  async update(updateProfileDto: UpdateProfileDto, id: number) {
+    return await this.updateProfileProvider.update(updateProfileDto, id);
   }
 
   remove(id: number) {

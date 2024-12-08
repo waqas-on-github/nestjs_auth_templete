@@ -1,14 +1,11 @@
 import { createZodDto } from 'nestjs-zod';
 import { z } from 'zod';
 
-export const CreateProfileSchema = z.object({
-  userId: z.string(),
+export const UpdateProfileSchema = z.object({
   username: z.string(),
   givenName: z.string().optional(),
   familyName: z.string().optional(),
   picture: z.string().optional(),
 });
 
-// class is required for using DTO as a type
-export class CreateProfileDto extends createZodDto(CreateProfileSchema) {}
-
+export class UpdateProfileDto extends createZodDto(UpdateProfileSchema) {}
