@@ -7,9 +7,10 @@ import { APP_GUARD, APP_PIPE } from '@nestjs/core';
 import { JwtAuthGuard } from './iam/guards/jwt.auth.guard';
 import { ZodValidationPipe } from 'nestjs-zod';
 import { PrismaModule } from './prismaModule/prisma.module';
+import { ProfileModule } from './profile/profile.module';
 
 @Module({
-  imports: [ConfigModule.forRoot({ isGlobal: true }), IamModule, PrismaModule],
+  imports: [ConfigModule.forRoot({ isGlobal: true }), IamModule, PrismaModule, ProfileModule],
   controllers: [AppController],
   providers: [
     AppService,
