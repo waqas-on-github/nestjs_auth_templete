@@ -42,6 +42,15 @@ export class SignInProvider {
       );
 
       if (refreshToken) {
+        // before saving and sending back to user save refresh token to db revoke previous refresh tokens
+        await this.prismaService.refreshToken.updateMany({
+          where: {
+            userId: user.id,
+          },
+          data: {
+            revoked: true,
+          },
+        });
         // save refresh token to db
         await this.tokenProvider.saveRefreshToken(refreshToken, user.id);
       }

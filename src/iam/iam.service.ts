@@ -4,8 +4,9 @@ import { SignUpDto } from './dto/signUp.dto';
 import { SignUpProvider } from './providers/signUp.provider';
 import { SignInProvider } from './providers/signIn.provider';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { ConfigService } from '@nestjs/config';
+
 import { RefreshProvider } from './providers/refresh.provider';
+import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
 export class IamService {
@@ -14,6 +15,7 @@ export class IamService {
     private readonly signUpProvider: SignUpProvider,
     private readonly signInProvider: SignInProvider,
     private readonly refreshProvider: RefreshProvider,
+    private readonly prismaService: PrismaService,
   ) {}
 
   async SignInOauthUser(user: any) {
@@ -28,6 +30,15 @@ export class IamService {
     );
 
     if (refreshToken) {
+      // before saving and sending back to user save refresh token to db revoke previous refresh tokens
+      await this.prismaService.refreshToken.updateMany({
+        where: {
+          userId: user.id,
+        },
+        data: {
+          revoked: true,
+        },
+      });
       // save refresh token to db
       await this.tokenProvider.saveRefreshToken(refreshToken, user.id);
     }
