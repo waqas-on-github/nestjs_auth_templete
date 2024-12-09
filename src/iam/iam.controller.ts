@@ -1,12 +1,12 @@
 import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-
-import e, { Request } from 'express';
+import { Request } from 'express';
 import { GoogleOauthGuard } from './guards/google.auth.guard';
 import { IamService } from './iam.service';
 import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { IsPublic } from './decorators/isPublic';
 import { SignInDto } from './dto/signIn.dto';
+import { RefreshTokenDto } from './dto/refresh-token.dto';
 
 interface googleRequest extends Request {
   user: any;
@@ -22,12 +22,11 @@ export class IamController {
   @Get('google')
   @UseGuards(GoogleOauthGuard)
   async googleAuth() {
-    //  return 'Google Auth Success';
     // Initiates Google OAuth flow
   }
 
   @IsPublic()
-  @Get('/callback')
+  @Get('/callback') // after auth complete google callback this url  and provide userdat as
   @UseGuards(GoogleOauthGuard)
   async googleAuthCallback(@Req() req: googleRequest) {
     return await this.iamService.SignInOauthUser(req.user);
@@ -47,5 +46,11 @@ export class IamController {
   @Post('/sign-up')
   async signUp(@Body() signUpDto: SignInDto) {
     return this.iamService.SingUp(signUpDto);
+  }
+
+  @IsPublic()
+  @Post('/refresh')
+  async Refresh(@Body() refreshTokenDto: RefreshTokenDto) {
+    return await this.iamService.Refresh(refreshTokenDto);
   }
 }

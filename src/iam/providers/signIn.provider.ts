@@ -31,15 +31,22 @@ export class SignInProvider {
         throw new BadRequestException('Invalid password');
       }
 
-      return {
-        accessToken: await this.tokenProvider.generateAccessToken({
-          id: user.id,
-          email: user.email,
-        }),
-        refreshToken: await this.tokenProvider.generateRefreshToken({
-          id: user.id,
-        }),
-      };
+      const accessToken = await this.tokenProvider.generateAccessToken(
+        user.id,
+        user.email,
+        user.googleId,
+      );
+      const refreshToken = await this.tokenProvider.generateRefreshToken(
+        user.id,
+        user.googleId,
+      );
+
+      if (refreshToken) {
+        // save refresh token to db
+        await this.tokenProvider.saveRefreshToken(refreshToken, user.id);
+      }
+
+      return { accessToken, refreshToken };
     } catch (error) {
       throw error;
     }

@@ -12,6 +12,7 @@ import { SignUpProvider } from './providers/signUp.provider';
 import { SignInProvider } from './providers/signIn.provider';
 import { PrismaModule } from 'src/prismaModule/prisma.module';
 import { ProfileModule } from 'src/profile/profile.module';
+import { RefreshProvider } from './providers/refresh.provider';
 
 @Module({
   controllers: [IamController],
@@ -25,6 +26,7 @@ import { ProfileModule } from 'src/profile/profile.module';
     JwtStrategy,
     SignUpProvider,
     SignInProvider,
+    RefreshProvider,
   ],
   imports: [
     PassportModule.register({ defaultStrategy: 'google' }),
