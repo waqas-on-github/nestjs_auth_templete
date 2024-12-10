@@ -3,15 +3,20 @@ import { PrismaService } from 'src/prisma.service';
 import * as argon2 from 'argon2';
 import { SignUpDto } from '../dto/signUp.dto';
 import { CreateProfileProvider } from 'src/profile/providers/create-profile';
+import { NotificationProvider } from './notification.provider';
+import { SendVerificationEmailProvider } from './sendVerificationEmail.provider';
+import { Request } from 'express';
 
 @Injectable()
 export class SignUpProvider {
   constructor(
     private readonly prismaService: PrismaService,
     private readonly createProfileProvider: CreateProfileProvider,
+    private readonly notificationProvider: NotificationProvider,
+    private readonly sendVerificationEmailProvider: SendVerificationEmailProvider,
   ) {}
 
-  async signUp(signUpDto: SignUpDto) {
+  async signUp(signUpDto: SignUpDto, req: Request) {
     try {
       // check user already exists
       const user = await this.prismaService.user.findFirst({
@@ -35,11 +40,18 @@ export class SignUpProvider {
         },
       });
 
+      // send user verification email
+      await this.sendVerificationEmailProvider.sendUserVerificationEmail(
+        savedUser.id,
+        req,
+      );
+
       // genetate user profile automatically
       await this.createProfileProvider.create({
         userId: String(savedUser.id),
         username: savedUser.email.split('@')[0],
       });
+
       return savedUser;
     } catch (error) {
       throw error;

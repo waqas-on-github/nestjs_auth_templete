@@ -19,8 +19,14 @@ export class SignInProvider {
           email: signInDto.email,
         },
       });
+
+      // check user exists
       if (!user) {
         throw new BadRequestException('User does not exist');
+      }
+      // check user email verified or not
+      if (!user.emailVerified) {
+        throw new BadRequestException('Email not verified');
       }
       // check password
       const validPassword = await argon2.verify(
@@ -31,15 +37,8 @@ export class SignInProvider {
         throw new BadRequestException('Invalid password');
       }
 
-      const accessToken = await this.tokenProvider.generateAccessToken(
-        user.id,
-        user.email,
-        user.googleId,
-      );
-      const refreshToken = await this.tokenProvider.generateRefreshToken(
-        user.id,
-        user.googleId,
-      );
+      const [accessToken, refreshToken] =
+        await this.tokenProvider.generateTokens(user);
 
       if (refreshToken) {
         // before saving and sending back to user save refresh token to db revoke previous refresh tokens

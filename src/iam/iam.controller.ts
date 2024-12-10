@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, UseGuards } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  Post,
+  Query,
+  Req,
+  UseGuards,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
 import { GoogleOauthGuard } from './guards/google.auth.guard';
@@ -7,6 +16,7 @@ import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { IsPublic } from './decorators/isPublic';
 import { SignInDto } from './dto/signIn.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
+import { VerifyDto } from './dto/verify.dto';
 
 interface googleRequest extends Request {
   user: any;
@@ -44,13 +54,19 @@ export class IamController {
 
   @IsPublic()
   @Post('/sign-up')
-  async signUp(@Body() signUpDto: SignInDto) {
-    return this.iamService.SingUp(signUpDto);
+  async signUp(@Body() signUpDto: SignInDto, @Req() req: Request) {
+    return this.iamService.SingUp(signUpDto, req);
   }
 
   @IsPublic()
   @Post('/refresh')
   async Refresh(@Body() refreshTokenDto: RefreshTokenDto) {
     return await this.iamService.Refresh(refreshTokenDto);
+  }
+
+  @IsPublic()
+  @Get('/verify-email')
+  async verify(@Query() verifyDto: VerifyDto) {
+    return await this.iamService.verify(verifyDto);
   }
 }

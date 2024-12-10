@@ -13,6 +13,10 @@ import { SignInProvider } from './providers/signIn.provider';
 import { PrismaModule } from 'src/prismaModule/prisma.module';
 import { ProfileModule } from 'src/profile/profile.module';
 import { RefreshProvider } from './providers/refresh.provider';
+import { ResendModule } from 'nestjs-resend';
+import { NotificationProvider } from './providers/notification.provider';
+import { UserVerificationProvider } from './providers/userVerification.provider';
+import { SendVerificationEmailProvider } from './providers/sendVerificationEmail.provider';
 
 @Module({
   controllers: [IamController],
@@ -27,11 +31,17 @@ import { RefreshProvider } from './providers/refresh.provider';
     SignUpProvider,
     SignInProvider,
     RefreshProvider,
+    NotificationProvider,
+    UserVerificationProvider,
+    SendVerificationEmailProvider,
   ],
   imports: [
     PassportModule.register({ defaultStrategy: 'google' }),
     PrismaModule,
     ProfileModule,
+    ResendModule.forRoot({
+      apiKey: 're_a3kguVqX_Bho2AHmydzdbgbYX9k67Ca1o',
+    }),
   ],
 })
 export class IamModule {}

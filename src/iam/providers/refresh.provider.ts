@@ -56,16 +56,9 @@ export class RefreshProvider {
         },
       });
 
-      // 4. Generate new access token
-      const accessToken = await this.tokenProvider.generateAccessToken(
-        user.id,
-        user.email,
-        user.googleId,
-      );
-      const refreshToken = await this.tokenProvider.generateRefreshToken(
-        user.id,
-        user.googleId,
-      );
+      // 4. Generate new access and refresh tokens
+      const [accessToken, refreshToken] =
+        await this.tokenProvider.generateTokens(user);
       return {
         accessToken: accessToken,
         refreshToken: refreshToken,

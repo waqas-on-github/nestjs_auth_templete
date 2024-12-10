@@ -30,7 +30,7 @@ model Profile {
   id             Int      @id @default(autoincrement())
   userId         Int      @unique
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-   username       String?
+  username       String?
   givenName      String?
   familyName     String?
   picture        String?
