@@ -5,4 +5,4 @@ const VerifySchema = z.object({
   token: z.string(),
 });
 
-export class VerifyDto extends createZodDto(VerifySchema) {}
+export class VerifyTokenDto extends createZodDto(VerifySchema) {}

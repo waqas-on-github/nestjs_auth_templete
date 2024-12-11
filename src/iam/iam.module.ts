@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
 import { IamService } from './iam.service';
-import { IamController } from './iam.controller';
 import { PassportModule } from '@nestjs/passport';
-import { ConfigService } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { GoogleStrategy } from './stratiges/google.strategy';
 import { GoogleUserProvider } from './providers/GoogleUserProvider';
 import { JwtService } from '@nestjs/jwt';
@@ -17,6 +16,11 @@ import { ResendModule } from 'nestjs-resend';
 import { NotificationProvider } from './providers/notification.provider';
 import { UserVerificationProvider } from './providers/userVerification.provider';
 import { SendVerificationEmailProvider } from './providers/sendVerificationEmail.provider';
+
+import { IamController } from './iam.controller';
+import { ForgotPasswordProvider } from './providers/forgotPaassword.provider';
+import { ResetPasswordLinkVerifyProvider } from './providers/resetPasswordLinkVerify.provider';
+import { ResetPasswordProvider } from './providers/resetPassword.provider';
 
 @Module({
   controllers: [IamController],
@@ -34,13 +38,20 @@ import { SendVerificationEmailProvider } from './providers/sendVerificationEmail
     NotificationProvider,
     UserVerificationProvider,
     SendVerificationEmailProvider,
+    ResetPasswordLinkVerifyProvider,
+    ForgotPasswordProvider,
+    ResetPasswordProvider,
   ],
   imports: [
     PassportModule.register({ defaultStrategy: 'google' }),
     PrismaModule,
     ProfileModule,
-    ResendModule.forRoot({
-      apiKey: 're_a3kguVqX_Bho2AHmydzdbgbYX9k67Ca1o',
+    ResendModule.forRootAsync({
+      inject: [ConfigService],
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => ({
+        apiKey: configService.get<string>('RESEND_API_KEY'),
+      }),
     }),
   ],
 })

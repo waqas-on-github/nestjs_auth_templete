@@ -20,7 +20,7 @@ export class NotificationProvider {
         `,
       });
     } catch (error) {
-      console.log(error);
+      throw error;
     }
   }
 }

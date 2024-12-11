@@ -38,7 +38,7 @@ model Profile {
 //later itll be moved to redis or other cache
 model RefreshToken {
   id             Int      @id @default(autoincrement())
-  userId         Int      @unique
+  userId         Int
   user           User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   revoked        Boolean  @default(false)
   refreshToken   String   @unique

@@ -1,5 +1,5 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
-import { VerifyDto } from '../dto/verify.dto';
+import { VerifyTokenDto } from '../dto/verify.dto';
 import { TokenProvider } from './tokenProvider';
 import { ConfigService } from '@nestjs/config';
 import { PrismaService } from 'src/prisma.service';
@@ -12,12 +12,13 @@ export class UserVerificationProvider {
     private readonly prismaService: PrismaService,
   ) {}
 
-  async verify(verifyDto: VerifyDto) {
+  async verify(verifyTokenDto: VerifyTokenDto) {
     try {
       // verify token
+
       const payload = await this.tokenProvider.validateToken(
-        verifyDto.token,
-        this.configService.get<string>('VERIFICATION_TOKEN_SECRET'),
+        verifyTokenDto.token,
+        this.configService.get<string>('EMAIL_VERIFICATION_TOKEN_SECRET'),
       );
 
       //check if user exists

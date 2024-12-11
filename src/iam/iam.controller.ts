@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  Param,
   Post,
   Query,
   Req,
@@ -16,7 +15,9 @@ import { JwtAuthGuard } from './guards/jwt.auth.guard';
 import { IsPublic } from './decorators/isPublic';
 import { SignInDto } from './dto/signIn.dto';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
-import { VerifyDto } from './dto/verify.dto';
+import { VerifyTokenDto } from './dto/verify.dto';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ResetPasswordDto } from './dto/reset-password.dto';
 
 interface googleRequest extends Request {
   user: any;
@@ -66,7 +67,40 @@ export class IamController {
 
   @IsPublic()
   @Get('/verify-email')
-  async verify(@Query() verifyDto: VerifyDto) {
-    return await this.iamService.verify(verifyDto);
+  async verify(@Query() verifyTokenDto: VerifyTokenDto) {
+    return await this.iamService.verify(verifyTokenDto);
+  }
+  // when user click on forgot password button he will be redirected to this route and he need to provide email in request body
+  @IsPublic()
+  @Post('/forgot-password')
+  async forgotPassword(
+    @Body() forgotPasswordDto: ForgotPasswordDto,
+    @Req() req: Request,
+  ) {
+    return await this.iamService.forgotPassword(forgotPasswordDto, req);
+  }
+  // user will get email with link to reset password and he will be redirected to this route contaning token in query param and validate token then user will be redirected to reset password page
+
+  @IsPublic()
+  @Get('/reset-password/verify')
+  async resetPasswordLinkVerify(@Query() verifyTokenDto: VerifyTokenDto) {
+    return await this.iamService.resetPasswordLinkVerify(verifyTokenDto);
+  }
+  // when user will be redirected to this route he will provide new password and validate token and then he will be redirected login page
+  @IsPublic()
+  @Post('/reset-password')
+  async resetPassword(
+    @Body() resetPasswordDto: ResetPasswordDto,
+    @Query() verifyTokenDto: VerifyTokenDto,
+  ) {
+    return await this.iamService.resetPassword(
+      resetPasswordDto,
+      verifyTokenDto,
+    );
   }
 }
+
+
+
+
+     

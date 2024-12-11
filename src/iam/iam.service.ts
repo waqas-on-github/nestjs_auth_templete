@@ -6,10 +6,14 @@ import { SignInProvider } from './providers/signIn.provider';
 import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { RefreshProvider } from './providers/refresh.provider';
 import { PrismaService } from 'src/prisma.service';
-import { VerifyDto } from './dto/verify.dto';
+import { VerifyTokenDto } from './dto/verify.dto';
 import { UserVerificationProvider } from './providers/userVerification.provider';
-import { ConfigService } from '@nestjs/config';
 import { Request } from 'express';
+import { ForgotPasswordDto } from './dto/forgotPassword.dto';
+import { ForgotPasswordProvider } from './providers/forgotPaassword.provider';
+import { ResetPasswordLinkVerifyProvider } from './providers/resetPasswordLinkVerify.provider';
+import { ResetPasswordDto } from './dto/reset-password.dto';
+import { ResetPasswordProvider } from './providers/resetPassword.provider';
 
 @Injectable()
 export class IamService {
@@ -20,7 +24,9 @@ export class IamService {
     private readonly refreshProvider: RefreshProvider,
     private readonly prismaService: PrismaService,
     private readonly userVerificationProvider: UserVerificationProvider,
-    private readonly configService: ConfigService,
+    private readonly resetPasswordLinkVerifyProvider: ResetPasswordLinkVerifyProvider,
+    private readonly forgotPasswordProvider: ForgotPasswordProvider,
+    private readonly resetPasswordProvider: ResetPasswordProvider,
   ) {}
 
   async SignInOauthUser(user: any) {
@@ -55,7 +61,30 @@ export class IamService {
   async Refresh(refreshTokenDto: RefreshTokenDto) {
     return await this.refreshProvider.refresh(refreshTokenDto);
   }
-  async verify(verifyDto: VerifyDto) {
-    return await this.userVerificationProvider.verify(verifyDto);
+  async verify(verifyTokenDto: VerifyTokenDto) {
+    return await this.userVerificationProvider.verify(verifyTokenDto);
+  }
+
+  async forgotPassword(forgotPasswordDto: ForgotPasswordDto, req: Request) {
+    return await this.forgotPasswordProvider.forgotPassword(
+      forgotPasswordDto,
+      req,
+    );
+  }
+
+  async resetPasswordLinkVerify(verifyTokenDto: VerifyTokenDto) {
+    return await this.resetPasswordLinkVerifyProvider.resetPasswordLinkVerify(
+      verifyTokenDto,
+    );
+  }
+
+  async resetPassword(
+    resetPasswordDto: ResetPasswordDto,
+    verifyTokenDto: VerifyTokenDto,
+  ) {
+    return await this.resetPasswordProvider.resetPassword(
+      resetPasswordDto,
+      verifyTokenDto,
+    );
   }
 }
