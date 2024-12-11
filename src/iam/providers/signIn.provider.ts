@@ -35,7 +35,7 @@ export class SignInProvider {
         signInDto.password,
       );
       if (!validPassword) {
-        throw new BadRequestException('Invalid password');
+        throw new BadRequestException('Invalid crediantials');
       }
 
       const [accessToken, refreshToken] =

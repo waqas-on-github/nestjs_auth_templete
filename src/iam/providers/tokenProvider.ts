@@ -1,6 +1,7 @@
 import { Injectable, InternalServerErrorException } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
+import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma.service';
 
 @Injectable()
@@ -35,15 +36,23 @@ export class TokenProvider {
     }
   }
 
-  async generateTokens(user) {
+  async generateTokens(user: User) {
     return await Promise.all([
       await this.signToken(
-        user,
+        {
+          id: user.id,
+          email: user.email,
+          googleId: user.googleId,
+          roles: user.Role,
+        },
         this.configService.get<string>('JWT_SECRET'),
         '1h',
       ),
       await this.signToken(
-        user,
+        {
+          id: user.id,
+          googleId: user.googleId,
+        },
         this.configService.get<string>('JWT_REFRESH_SECRET'),
         '10d',
       ),

@@ -18,6 +18,9 @@ import { RefreshTokenDto } from './dto/refresh-token.dto';
 import { VerifyTokenDto } from './dto/verify.dto';
 import { ForgotPasswordDto } from './dto/forgotPassword.dto';
 import { ResetPasswordDto } from './dto/reset-password.dto';
+import { RolesGuard } from './guards/roles.guard';
+import { Roles } from './decorators/Roles';
+import { Role } from 'src/enums/roles.enums';
 
 interface googleRequest extends Request {
   user: any;
@@ -43,6 +46,7 @@ export class IamController {
     return await this.iamService.SignInOauthUser(req.user);
   }
   @Get('/proctected')
+  @UseGuards(RolesGuard)
   @UseGuards(JwtAuthGuard)
   async protected() {
     return 'protected route';
